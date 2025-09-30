@@ -1,5 +1,7 @@
 # AI-Powered Campaign Generator
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-blue?style=for-the-badge&logo=github)](https://mdalamin706688.github.io/ai-powered-campaign-generator/)
+
 A production-ready, dynamic AI-powered campaign generator with persistent chat history, built with React, TypeScript, Vite, and Tailwind CSS. Simulates streaming JSON payloads for marketing campaigns based on data sources, channels, and user prompts.
 
 ## How It Works
