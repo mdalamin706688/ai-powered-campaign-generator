@@ -1,116 +1,144 @@
-# Perplexity-Style Chat Interface
+# AI-Powered Campaign Generator
 
-A production-level, industry-standard chat interface inspired by Perplexity, built with React, TypeScript, Vite, and Tailwind CSS.
+A production-ready, dynamic AI-powered campaign generator with persistent chat history, built with React, TypeScript, Vite, and Tailwind CSS. Simulates streaming JSON payloads for marketing campaigns based on data sources, channels, and user prompts.
 
 ## How It Works
 
-This chat interface simulates an AI-powered campaign generator that creates personalized marketing campaigns based on:
+This chat interface generates professional marketing campaign payloads by analyzing:
 
-1. **Data Sources**: Connect to customer data from Shopify (e-commerce), Google Ads Tag (advertising insights), or Facebook Page (social media metrics)
-2. **Channels**: Choose delivery methods like Email, SMS, WhatsApp, or Ads
-3. **Campaign Idea**: Describe your marketing campaign concept
-4. **AI Generation**: The system generates a JSON payload with the right audience, right channel, right message, and right time
+1. **Data Sources**: Customer data from Shopify (e-commerce), Google Ads Tag (advertising insights), or Facebook Page (social media metrics)
+2. **Channels**: Delivery methods like Email, SMS, WhatsApp, or Ads
+3. **Campaign Idea**: Natural language description of your marketing campaign
+4. **AI Generation**: Creates a structured JSON payload with audience segments, workflow steps, tracking, compliance, and success criteria
 
 ### Workflow:
 1. Select one or more data sources from the left sidebar
 2. Choose one or more channels for campaign delivery
 3. Type your campaign idea in the chat input
 4. Click "Generate" to see the streaming JSON payload
-5. The JSON shows how the AI would target the campaign
+5. The JSON includes campaign details, audience filters, workflow, tracking, and more
 
 ## Features
-- Modern chat UI with streaming JSON output
-- Connect to 3 data sources: Shopify, Google Ads Tag, Facebook Page
-- Select 4 channels: Email, SMS, WhatsApp, Ads
-- Simulate campaign payload: right time, right channel, right message, right audience
-- Reusable components, hooks, and context
-- Production best practices
+- Dynamic campaign naming and offer injection
+- Parameterized audience filters and reusable templates
+- Centralized offer library and experiment support
+- Channel-level message limits and success criteria overrides
+- Persistent chat history with session management
+- Modern UI with streaming JSON output
+- Production best practices and accessibility
+
+## Testing the App
+
+Here are 5 comprehensive test prompts with sidebar selections to verify the dynamic campaign generation:
+
+### 1. Winback Campaign (Multi-Channel, Discount)
+- **Sidebar Selections:**
+  - Data Sources: Shopify
+  - Channels: Email, SMS, Ads
+- **Prompt:**  
+  Create a winback campaign for lapsed customers using Email, SMS, and Ads. Offer a 15% discount code SAVE15. Track open, click, and conversion rates.
+
+**Expected Output:** Campaign named "Winback: Email + SMS + Ads", with workflow for all channels, offer library containing SAVE15, parameterized tracking.
+
+### 2. VIP Early Access (Email Only, No Discount)
+- **Sidebar Selections:**
+  - Data Sources: Facebook Page
+  - Channels: Email
+- **Prompt:**  
+  Send an exclusive VIP early access invite to our top customers via Email only. No discount, just early access to the new product launch. Track open rates.
+
+**Expected Output:** Campaign named "Product Launch: Email", no offer, audience from Facebook Page, tracking focused on open rates.
+
+### 3. Cart Abandonment (WhatsApp + SMS, Multi-Region)
+- **Sidebar Selections:**
+  - Data Sources: Google Ads Tag
+  - Channels: WhatsApp, SMS
+- **Prompt:**  
+  Target users who abandoned their cart in the last 7 days with a reminder via WhatsApp and SMS. Include a 10% discount code CART10. Localize for US and MX. Track conversions.
+
+**Expected Output:** Campaign named "Cart Reminder: WhatsApp + SMS", offer CART10, localization for US/MX, compliance for opt-ins, conversion tracking.
+
+### 4. Loyalty Reward (Email + SMS, Custom Success Criteria)
+- **Sidebar Selections:**
+  - Data Sources: Shopify
+  - Channels: Email, SMS
+- **Prompt:**  
+  Reward loyal Shopify customers who purchased 3+ times in the last 90 days with a loyalty offer via Email and SMS. Use discount code LOYAL20 for 20% off. Success if conversion rate >= 8% and click rate >= 15%.
+
+**Expected Output:** Campaign named "Loyalty Reward: Email + SMS", offer LOYAL20, success criteria overridden to >=8% conversion and >=15% click rate.
+
+### 5. Flash Sale (All Channels, Full Tracking)
+- **Sidebar Selections:**
+  - Data Sources: Shopify, Google Ads Tag, Facebook Page
+  - Channels: Email, SMS, WhatsApp, Ads
+- **Prompt:**  
+  Announce a 24-hour flash sale across Email, SMS, WhatsApp, and Ads. Use code FLASH24 for 24% off. Schedule all messages for tomorrow at 10am local time. Track all metrics.
+
+**Expected Output:** Campaign named "Flash Sale: Email + SMS + WhatsApp + Ads (24% OFF)", offer FLASH24, unified scheduling, full tracking (open, click, conversion), audience from all sources.
 
 ## UI Testing Instructions
 
 ### 1. Initial Load Test
-- ✅ Page loads at http://localhost:5173/
-- ✅ Header shows "Perplexity Chat" with sparkles icon
+- ✅ Page loads at https://mdalamin706688.github.io/ai-powered-campaign-generator/
+- ✅ Header shows "AI Campaign Generator" with sparkles icon
 - ✅ "AI-Powered Campaign Generator" subtitle visible
 - ✅ "Production Ready" badge in green
 - ✅ Sidebar shows "Data Sources" and "Channels" sections
-- ✅ Chat area shows welcome message with CPU icon
+- ✅ Chat area shows welcome message
 - ✅ Input field shows "Describe your campaign idea..." placeholder
 
 ### 2. Data Source Selection Test
 - ✅ Click on "Shopify" card
 - ✅ Card highlights with blue background and checkmark
-- ✅ Icon changes to blue
-- ✅ Hover effects work (shadow and background change)
 - ✅ Select multiple sources (Google Ads Tag, Facebook Page)
 - ✅ All selected sources show checkmarks
 
 ### 3. Channel Selection Test
 - ✅ Click on "Email" card
 - ✅ Card highlights with green background and checkmark
-- ✅ Icon changes to green
 - ✅ Select multiple channels (SMS, WhatsApp, Ads)
 - ✅ All selected channels show checkmarks
 
 ### 4. Message Input Test
-- ✅ Type "Test campaign" in input field
+- ✅ Type campaign idea in input field
 - ✅ "Generate" button becomes enabled
 - ✅ Button shows gradient background and airplane icon
 - ✅ Press Enter or click "Generate" to send
 
 ### 5. JSON Streaming Test
-- ✅ User message appears in blue bubble on right
-- ✅ System starts streaming JSON character by character
-- ✅ JSON builds progressively in white bubble on left
-- ✅ Final JSON structure includes:
-  - `audience`: Based on selected data sources
-  - `channel`: First selected channel
-  - `message`: "Special offer for you! 🎉"
-  - `time`: Current ISO timestamp
-  - `dataSources`: Array of selected sources
+- ✅ User message appears in chat
+- ✅ System streams JSON payload character by character
+- ✅ Final JSON includes campaign details, audience, workflow, tracking, etc.
 
-### 6. Payload Logic Test
-- ✅ Select only "Google Ads Tag" → `audience`: "Google Ads Tag audience"
-- ✅ Select "Shopify" + "Facebook Page" → `audience`: "Shopify, Facebook Page audience"
-- ✅ Select "SMS" as first channel → `channel`: "SMS"
-- ✅ `dataSources` array matches selected sources
+### 6. Chat History Test
+- ✅ Create new chat session
+- ✅ Switch between chats
+- ✅ Edit chat titles
+- ✅ Delete chats
+- ✅ History persists across sessions
 
-### 7. UI Responsiveness Test
+### 7. Responsiveness Test
 - ✅ Resize window to mobile size
-- ✅ Sidebar collapses appropriately
-- ✅ Chat bubbles adjust width
-- ✅ Touch interactions work on mobile
-
-### 8. Animation & Premium Features Test
-- ✅ Smooth slide-in animations for messages
-- ✅ Gradient backgrounds and backdrop blur
-- ✅ Hover effects on cards
-- ✅ Loading spinner during generation
-- ✅ Streaming pulse animation on JSON
-
-### 9. Accessibility Test
-- ✅ Keyboard navigation works (Tab through elements)
-- ✅ Screen reader labels present (sr-only classes)
-- ✅ Color contrast meets WCAG standards
-- ✅ Focus indicators visible
-
-### 10. Error Handling Test
-- ✅ Try sending empty message → Button disabled
-- ✅ No data sources selected → Uses "General audience"
-- ✅ No channels selected → Uses "Email" as default
+- ✅ Sidebar adjusts appropriately
+- ✅ Chat interface remains functional
 
 ## Getting Started
-1. Clone this repo
+1. Clone this repo: `git clone https://github.com/mdalamin706688/ai-powered-campaign-generator.git`
 2. Install dependencies: `npm install`
 3. Start dev server: `npm run dev`
-4. Follow UI testing instructions above
+4. Visit http://localhost:5173/ or the live site
+5. Follow testing instructions above
+
+## Deployment
+- Built with Vite for fast static site generation
+- Deployed to GitHub Pages via GitHub Actions
+- Live at: https://mdalamin706688.github.io/ai-powered-campaign-generator/
 
 ## Folder Structure
-- `src/components` - UI components
-- `src/hooks` - Custom hooks
-- `src/context` - React context for state
-- `src/utils` - Utility functions
-- `src/types` - TypeScript types
+- `src/components` - UI components (ChatInput, ChatHistory, etc.)
+- `src/context` - React context for chat and selection state
+- `src/types` - TypeScript interfaces
+- `.github/workflows` - GitHub Actions for deployment
 
 ## License
 MIT
