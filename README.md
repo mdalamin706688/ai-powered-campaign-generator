@@ -1,6 +1,6 @@
 # AI-Powered Campaign Generator
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-blue?style=for-the-badge&logo=github)](https://mdalamin706688.github.io/ai-powered-campaign-generator/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-blue?style=for-the-badge&logo=github)](https://mdalamin706688.github.io/markopolo-ai-full-stack-challenge/)
 
 A production-ready, dynamic AI-powered campaign generator with persistent chat history, built with React, TypeScript, Vite, and Tailwind CSS. Simulates streaming JSON payloads for marketing campaigns based on data sources, channels, and user prompts.
 
@@ -125,7 +125,7 @@ Here are 5 comprehensive test prompts with sidebar selections to verify the dyna
 - ✅ Chat interface remains functional
 
 ## Getting Started
-1. Clone this repo: `git clone https://github.com/mdalamin706688/ai-powered-campaign-generator.git`
+1. Clone this repo: `git clone https://github.com/mdalamin706688/markopolo-ai-full-stack-challenge.git`
 2. Install dependencies: `npm install`
 3. Start dev server: `npm run dev`
 4. Visit http://localhost:5173/ or the live site
@@ -134,7 +134,7 @@ Here are 5 comprehensive test prompts with sidebar selections to verify the dyna
 ## Deployment
 - Built with Vite for fast static site generation
 - Deployed to GitHub Pages via GitHub Actions
-- Live at: https://mdalamin706688.github.io/ai-powered-campaign-generator/
+- Live at: https://mdalamin706688.github.io/markopolo-ai-full-stack-challenge/
 
 ## Folder Structure
 - `src/components` - UI components (ChatInput, ChatHistory, etc.)

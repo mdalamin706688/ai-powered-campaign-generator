@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/ai-powered-campaign-generator/',
+  base: '/markopolo-ai-full-stack-challenge/',
   server: {
     port: 5173,
     strictPort: true,
