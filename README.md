@@ -1,6 +1,6 @@
 # AI-Powered Campaign Generator
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-blue?style=for-the-badge&logo=github)](https://mdalamin706688.github.io/markopolo-ai-full-stack-challenge/)
+<a href="https://mdalamin706688.github.io/markopolo-ai-full-stack-challenge/" target="_blank"><img src="https://img.shields.io/badge/Live%20Demo-Visit%20Site-blue?style=for-the-badge&logo=github" alt="Live Demo"></a>
 
 A production-ready, dynamic AI-powered campaign generator with persistent chat history, built with React, TypeScript, Vite, and Tailwind CSS. Simulates streaming JSON payloads for marketing campaigns based on data sources, channels, and user prompts.
 
