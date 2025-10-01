@@ -15,7 +15,7 @@ export function ChatArea() {
   // Show all messages and only keep the latest streaming message for each stream
   const recentMessages = messages.filter((msg, _, arr) => {
     // For streaming messages, only keep the latest one (the one with the highest index in the array)
-    if (msg.id.startsWith('stream-')) {
+    if (msg.id.startsWith('stream-') || msg.id.startsWith('explanation-')) {
       const streamBaseId = msg.id.split('-').slice(0, 2).join('-'); // Extract base stream ID
       const streamMessages = arr.filter(m => m.id.startsWith(streamBaseId));
       return streamMessages.indexOf(msg) === streamMessages.length - 1;
@@ -115,7 +115,9 @@ export function ChatArea() {
           <div className="flex flex-col gap-2">
             {msg.role === 'system' && (
               <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                <span className="font-medium">Campaign Payload</span>
+                <span className="font-medium">
+                  {msg.id.startsWith('explanation-') ? 'Strategy Analysis' : 'Campaign Payload'}
+                </span>
                 {msg.streaming && (
                   <div className="flex items-center gap-1">
                     <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce"></div>
@@ -134,9 +136,15 @@ export function ChatArea() {
               } ${msg.streaming ? 'animate-pulse' : ''}`}
             >
               {msg.role === 'system' ? (
-                <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border">
-                  {msg.content}
-                </pre>
+                msg.id.startsWith('explanation-') ? (
+                  <div className="text-sm leading-relaxed whitespace-pre-line font-sans">
+                    {msg.content}
+                  </div>
+                ) : (
+                  <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border">
+                    {msg.content}
+                  </pre>
+                )
               ) : (
                 <div className="text-sm leading-relaxed">
                   {msg.content}

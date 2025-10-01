@@ -193,6 +193,102 @@ function parsePromptToPayload(prompt: string, selectedDataSources: DataSource[],
   return payload;
 }
 
+function generatePayloadExplanation(payload: CampaignPayload, prompt: string, selectedDataSources: DataSource[], selectedChannels: string[]): string {
+  // Analyze prompt for key themes
+  const promptLower = prompt.toLowerCase();
+  const isReengagement = promptLower.includes('re-engage') || promptLower.includes('inactive') || promptLower.includes('haven\'t purchased');
+  const isPromotional = promptLower.includes('sale') || promptLower.includes('discount') || promptLower.includes('offer') || promptLower.includes('promotion');
+  const isSeasonal = promptLower.includes('holiday') || promptLower.includes('seasonal') || promptLower.includes('christmas') || promptLower.includes('black friday');
+  const isRetention = promptLower.includes('retention') || promptLower.includes('loyalty') || promptLower.includes('keep') || promptLower.includes('maintain');
+  const isAcquisition = promptLower.includes('new customer') || promptLower.includes('acquire') || promptLower.includes('attract') || promptLower.includes('prospect');
+
+  // Determine campaign type
+  let campaignType = 'General Marketing';
+  if (isReengagement) campaignType = 'Re-engagement';
+  else if (isPromotional) campaignType = 'Promotional';
+  else if (isSeasonal) campaignType = 'Seasonal';
+  else if (isRetention) campaignType = 'Retention';
+  else if (isAcquisition) campaignType = 'Acquisition';
+
+  // Dynamic audience description based on prompt analysis
+  let audienceDescription = 'Targeted audience based on your specified criteria';
+  if (isReengagement) {
+    audienceDescription = 'Customers who haven\'t engaged recently, identified through purchase behavior analysis';
+  } else if (isAcquisition) {
+    audienceDescription = 'Potential new customers matching your ideal profile characteristics';
+  } else if (isRetention) {
+    audienceDescription = 'Existing valuable customers to maintain engagement and loyalty';
+  }
+
+  // Dynamic channel recommendation
+  let channelRationale = 'Selected for optimal reach and engagement based on your audience';
+  if (selectedChannels.includes('Email')) {
+    channelRationale = 'Email chosen for detailed messaging and personalized communication';
+  } else if (selectedChannels.includes('SMS')) {
+    channelRationale = 'SMS selected for immediate, high-impact notifications';
+  } else if (selectedChannels.includes('WhatsApp')) {
+    channelRationale = 'WhatsApp chosen for conversational, personal touchpoints';
+  }
+
+  // Dynamic timing rationale
+  let timingRationale = 'Scheduled for optimal audience availability';
+  if (isReengagement) {
+    timingRationale = 'Timed to catch customers when they\'re most likely to reconsider engagement';
+  } else if (isPromotional) {
+    timingRationale = 'Scheduled during peak shopping periods for maximum impact';
+  } else if (isSeasonal) {
+    timingRationale = 'Aligned with seasonal shopping patterns and calendar events';
+  }
+
+  // Dynamic recommendations based on campaign type
+  let recommendations = 'Test with a small audience segment first, then scale based on performance metrics.';
+  if (isReengagement) {
+    recommendations = 'Start with low-frequency messaging to avoid overwhelming inactive users. Monitor re-engagement rates closely.';
+  } else if (isPromotional) {
+    recommendations = 'Track conversion rates and adjust offer value based on performance. Consider A/B testing different incentives.';
+  } else if (isSeasonal) {
+    recommendations = 'Time sensitivity is critical - monitor inventory levels and adjust messaging as the season progresses.';
+  }
+
+  const explanation = `Campaign Strategy Overview
+
+You requested: "${prompt}"
+
+Campaign Type: ${campaignType}
+Selected configuration: ${selectedDataSources.join(' + ')} data source${selectedDataSources.length > 1 ? 's' : ''} with ${selectedChannels.join(' + ')} channel${selectedChannels.length > 1 ? 's' : ''}
+
+CAMPAIGN STRUCTURE
+ID: ${payload.campaignId}
+Name: ${payload.campaignName}
+
+AUDIENCE TARGETING
+Data Source: ${payload.dataSources.join(', ')}
+${audienceDescription}.
+
+EXECUTION PLAN
+Primary Channel: ${payload.workflow[0]?.channel || 'Email'}
+${channelRationale}.
+
+Timing: ${payload.workflow[0]?.schedule?.datetime ? new Date(payload.workflow[0]?.schedule.datetime).toLocaleString() : 'Immediate'}
+${timingRationale}.
+
+Offer: ${payload.workflow[0]?.offer || 'None specified'}
+
+PERFORMANCE METRICS
+Conversion Target: ${payload.successCriteria?.conversionRateTarget || '5%'}
+Click Target: ${payload.successCriteria?.clickRateTarget || '10%'}
+Tracking: Open rates, click rates, and conversions enabled for comprehensive analysis.
+
+COMPLIANCE & LIMITS
+Message Limit: ${payload.limits?.maxMessagesPerUser || 3} per user
+Designed to maintain deliverability and respect user preferences.
+
+RECOMMENDATIONS
+${recommendations} Monitor engagement rates closely and adjust targeting as needed for optimal results.`;
+
+  return explanation;
+}
+
 export function ChatInput() {
   const { addMessage, setStreamingPayload, currentChatId, dataSources, channels } = useChatContext() as {
     addMessage: (msg: ChatMessage) => void;
@@ -243,6 +339,27 @@ export function ChatInput() {
     }
 
     setLoading(false);
+
+    // Add explanation message with streaming effect
+    const explanation = generatePayloadExplanation(payload, input, dataSources, channels);
+    const explanationId = `explanation-${Date.now()}`;
+    let streamedExplanation = '';
+
+    for (let i = 0; i < explanation.length; i++) {
+      streamedExplanation += explanation[i];
+      await new Promise((r) => setTimeout(r, 15)); // Slightly faster than JSON for premium feel
+
+      if (i % 10 === 0 || i === explanation.length - 1) {
+        const isComplete = i === explanation.length - 1;
+        addMessage({
+          id: `${explanationId}-${i}`,
+          role: 'system',
+          content: streamedExplanation,
+          timestamp: new Date().toISOString(),
+          streaming: !isComplete,
+        });
+      }
+    }
   };
 
   return (

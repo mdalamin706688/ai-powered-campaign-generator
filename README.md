@@ -4,6 +4,45 @@
 
 A production-ready, dynamic AI-powered campaign generator with persistent chat history, built with React, TypeScript, Vite, and Tailwind CSS. Simulates streaming JSON payloads for marketing campaigns based on data sources, channels, and user prompts.
 
+## 🚀 Quick Test Prompts
+
+Try these 5 diverse prompts with their sidebar selections to see the dynamic explanation system in action:
+
+### 🧪 Test Prompt 1: Re-engagement Campaign
+**Sidebar Selections:**
+- Data Source: Shopify
+- Channel: Email
+
+**Prompt:** "Create a re-engagement campaign for customers who haven't purchased in 30 days, offering 15% off their next order"
+
+### 🎯 Test Prompt 2: Promotional Flash Sale
+**Sidebar Selections:**
+- Data Source: Facebook Page
+- Channel: WhatsApp
+
+**Prompt:** "Launch a flash sale announcement for our new product line targeting engaged followers with a limited-time 20% discount"
+
+### 🎄 Test Prompt 3: Seasonal Holiday Campaign
+**Sidebar Selections:**
+- Data Source: Shopify
+- Channel: Email, SMS
+
+**Prompt:** "Create a holiday promotion campaign for Black Friday with tiered discounts: 10% for email subscribers, 15% for SMS opt-ins"
+
+### 🆕 Test Prompt 4: New Customer Acquisition
+**Sidebar Selections:**
+- Data Source: Google Ads Tag
+- Channel: Ads
+
+**Prompt:** "Run an acquisition campaign to attract new customers interested in eco-friendly products with a welcome discount"
+
+### 💎 Test Prompt 5: Customer Retention Program
+**Sidebar Selections:**
+- Data Source: Shopify
+- Channel: Email, WhatsApp
+
+**Prompt:** "Build a loyalty retention program for our top 10% customers with exclusive early access and personalized recommendations"
+
 ## How It Works
 
 This chat interface generates professional marketing campaign payloads by analyzing:
