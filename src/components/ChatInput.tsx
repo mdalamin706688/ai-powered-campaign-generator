@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useChatContext } from '../context/useChatContext';
-import type { ChatMessage, CampaignPayload, DataSource } from '../types/chat';
+import type { ChatMessage, CampaignPayload, DataSource, Channel } from '../types/chat';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
 function parsePromptToPayload(prompt: string, selectedDataSources: DataSource[], selectedChannels: string[]): CampaignPayload {
@@ -87,16 +87,22 @@ function parsePromptToPayload(prompt: string, selectedDataSources: DataSource[],
   // Merge with selectedDataSources, dedupe
   const mergedDataSources = Array.from(new Set([...promptDataSources, ...selectedDataSources]));
 
-  // --- Workflow: unified templateRef, experiment block, schedule, and offer injection ---
-  const mergedChannels = [...selectedChannels];
+  // Parse channels from prompt as well
+  const promptChannels: string[] = [];
+  if (lowerPrompt.includes("email")) promptChannels.push("Email");
+  if (lowerPrompt.includes("sms")) promptChannels.push("SMS");
+  if (lowerPrompt.includes("whatsapp")) promptChannels.push("WhatsApp");
+  if (lowerPrompt.includes("ads")) promptChannels.push("Ads");
+  // Merge with selectedChannels, dedupe
+  const mergedChannels = Array.from(new Set([...promptChannels, ...selectedChannels]));
   const workflow: CampaignPayload['workflow'] = [];
   const scheduleObj = { datetime: "2025-09-30T10:00:00.000Z", localTime: true, timezone: "customer_local" };
   mergedChannels.forEach((channel) => {
     let templateRef = selectedOffer ? "flashsale_email_v1" : "generic_email_v1";
     if (channel === "SMS") templateRef = "winback_sms_v1";
     if (channel === "WhatsApp") templateRef = "cart_whatsapp_v1";
-    const step: any = {
-      channel,
+    const step: CampaignPayload['workflow'][0] = {
+      channel: channel as Channel,
       templateRef,
       schedule: scheduleObj,
       offer: selectedOffer,
@@ -193,7 +199,7 @@ function parsePromptToPayload(prompt: string, selectedDataSources: DataSource[],
   return payload;
 }
 
-function generatePayloadExplanation(payload: CampaignPayload, prompt: string, selectedDataSources: DataSource[], selectedChannels: string[]): string {
+function generatePayloadExplanation(payload: CampaignPayload, prompt: string): string {
   // Analyze prompt for key themes
   const promptLower = prompt.toLowerCase();
   const isReengagement = promptLower.includes('re-engage') || promptLower.includes('inactive') || promptLower.includes('haven\'t purchased') || promptLower.includes('lapsed') || promptLower.includes('winback') || promptLower.includes('churn') || promptLower.includes('dormant') || promptLower.includes('bring back');
@@ -222,11 +228,12 @@ function generatePayloadExplanation(payload: CampaignPayload, prompt: string, se
 
   // Dynamic channel recommendation
   let channelRationale = 'Selected for optimal reach and engagement based on your audience';
-  if (selectedChannels.includes('Email')) {
+  const workflowChannels = payload.workflow.map(w => w.channel);
+  if (workflowChannels.includes('Email')) {
     channelRationale = 'Email chosen for detailed messaging and personalized communication';
-  } else if (selectedChannels.includes('SMS')) {
+  } else if (workflowChannels.includes('SMS')) {
     channelRationale = 'SMS selected for immediate, high-impact notifications';
-  } else if (selectedChannels.includes('WhatsApp')) {
+  } else if (workflowChannels.includes('WhatsApp')) {
     channelRationale = 'WhatsApp chosen for conversational, personal touchpoints';
   }
 
@@ -276,7 +283,7 @@ function generatePayloadExplanation(payload: CampaignPayload, prompt: string, se
 
 You requested: "${prompt}"
 
-This is a **${campaignType.toLowerCase()}** campaign using **${selectedDataSources.length > 0 ? selectedDataSources.join(' + ') : 'selected'}** data source${selectedDataSources.length > 1 ? 's' : ''} with **${selectedChannels.length > 0 ? selectedChannels.join(' + ') : 'selected'}** communication channel${selectedChannels.length > 1 ? 's' : ''}.
+This is a **${campaignType.toLowerCase()}** campaign using **${payload.dataSources.length > 0 ? payload.dataSources.join(' + ') : 'selected'}** data source${payload.dataSources.length > 1 ? 's' : ''} with **${payload.workflow.length > 0 ? payload.workflow.map(w => w.channel).join(' + ') : 'selected'}** communication channel${payload.workflow.length > 1 ? 's' : ''}.
 
 🎯 **Campaign Details**  
 • Campaign ID: ${payload.campaignId}  
@@ -358,7 +365,7 @@ export function ChatInput() {
     setLoading(false);
 
     // Add explanation message with streaming effect
-    const explanation = generatePayloadExplanation(payload, input, dataSources, channels);
+    const explanation = generatePayloadExplanation(payload, input);
     const explanationId = `explanation-${Date.now()}`;
     let streamedExplanation = '';
 
