@@ -138,7 +138,12 @@ export function ChatArea() {
               {msg.role === 'system' ? (
                 msg.id.startsWith('explanation-') ? (
                   <div className="text-sm leading-relaxed whitespace-pre-line font-sans">
-                    {msg.content}
+                    <div dangerouslySetInnerHTML={{
+                      __html: msg.content
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/^• /gm, '<span class="inline-block w-2 h-2 bg-blue-500 rounded-full mr-2 flex-shrink-0"></span>')
+                        .replace(/\n/g, '<br>')
+                    }} />
                   </div>
                 ) : (
                   <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border">
