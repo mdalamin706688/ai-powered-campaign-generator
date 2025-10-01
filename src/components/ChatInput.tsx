@@ -196,19 +196,19 @@ function parsePromptToPayload(prompt: string, selectedDataSources: DataSource[],
 function generatePayloadExplanation(payload: CampaignPayload, prompt: string, selectedDataSources: DataSource[], selectedChannels: string[]): string {
   // Analyze prompt for key themes
   const promptLower = prompt.toLowerCase();
-  const isReengagement = promptLower.includes('re-engage') || promptLower.includes('inactive') || promptLower.includes('haven\'t purchased');
-  const isPromotional = promptLower.includes('sale') || promptLower.includes('discount') || promptLower.includes('offer') || promptLower.includes('promotion');
-  const isSeasonal = promptLower.includes('holiday') || promptLower.includes('seasonal') || promptLower.includes('christmas') || promptLower.includes('black friday');
-  const isRetention = promptLower.includes('retention') || promptLower.includes('loyalty') || promptLower.includes('keep') || promptLower.includes('maintain');
-  const isAcquisition = promptLower.includes('new customer') || promptLower.includes('acquire') || promptLower.includes('attract') || promptLower.includes('prospect');
+  const isReengagement = promptLower.includes('re-engage') || promptLower.includes('inactive') || promptLower.includes('haven\'t purchased') || promptLower.includes('lapsed') || promptLower.includes('winback') || promptLower.includes('churn') || promptLower.includes('dormant') || promptLower.includes('bring back');
+  const isPromotional = promptLower.includes('sale') || promptLower.includes('discount') || promptLower.includes('offer') || promptLower.includes('promotion') || promptLower.includes('deal') || promptLower.includes('special') || promptLower.includes('flash');
+  const isSeasonal = promptLower.includes('holiday') || promptLower.includes('seasonal') || promptLower.includes('christmas') || promptLower.includes('black friday') || promptLower.includes('season') || promptLower.includes('event');
+  const isRetention = promptLower.includes('retention') || promptLower.includes('loyalty') || promptLower.includes('keep') || promptLower.includes('maintain') || promptLower.includes('vip') || promptLower.includes('loyal');
+  const isAcquisition = promptLower.includes('new customer') || promptLower.includes('acquire') || promptLower.includes('attract') || promptLower.includes('prospect') || promptLower.includes('acquisition');
 
-  // Determine campaign type
+  // Determine campaign type with better priority
   let campaignType = 'General Marketing';
   if (isReengagement) campaignType = 'Re-engagement';
-  else if (isPromotional) campaignType = 'Promotional';
-  else if (isSeasonal) campaignType = 'Seasonal';
   else if (isRetention) campaignType = 'Retention';
   else if (isAcquisition) campaignType = 'Acquisition';
+  else if (isSeasonal) campaignType = 'Seasonal';
+  else if (isPromotional) campaignType = 'Promotional';
 
   // Dynamic audience description based on prompt analysis
   let audienceDescription = 'Targeted audience based on your specified criteria';
@@ -241,30 +241,52 @@ function generatePayloadExplanation(payload: CampaignPayload, prompt: string, se
   }
 
   // Dynamic recommendations based on campaign type
-  let recommendations = 'Test with a small audience segment first, then scale based on performance metrics.';
+  let recommendations = [];
   if (isReengagement) {
-    recommendations = 'Start with low-frequency messaging to avoid overwhelming inactive users. Monitor re-engagement rates closely.';
+    recommendations = [
+      'Start with low-frequency messaging to avoid overwhelming inactive users',
+      'Monitor re-engagement rates closely and adjust messaging based on response',
+      'Consider progressive incentives starting with simple re-engagement offers',
+      'Track long-term behavior changes beyond initial re-engagement metrics'
+    ];
   } else if (isPromotional) {
-    recommendations = 'Track conversion rates and adjust offer value based on performance. Consider A/B testing different incentives.';
+    recommendations = [
+      'Track conversion rates and adjust offer value based on performance',
+      'Consider A/B testing different incentives and messaging approaches',
+      'Monitor inventory levels and adjust campaign pacing accordingly',
+      'Analyze customer segments that respond best to promotional offers'
+    ];
   } else if (isSeasonal) {
-    recommendations = 'Time sensitivity is critical - monitor inventory levels and adjust messaging as the season progresses.';
+    recommendations = [
+      'Time sensitivity is critical - monitor inventory levels and adjust messaging',
+      'Consider pre-season teaser campaigns to build anticipation',
+      'Track seasonal conversion patterns for future campaign optimization',
+      'Plan post-season follow-up campaigns to maintain momentum'
+    ];
+  } else {
+    recommendations = [
+      'Test with a small audience segment first, then scale based on performance',
+      'Monitor engagement rates closely and adjust targeting parameters',
+      'Consider A/B testing different messaging approaches',
+      'Track ROI and optimize campaign elements based on data insights'
+    ];
   }
 
   const explanation = `📊 **Campaign Analysis**
 
 You requested: "${prompt}"
 
-This is a **${campaignType.toLowerCase()}** campaign using **${selectedDataSources.join(' and ')}** data source${selectedDataSources.length > 1 ? 's' : ''} with **${selectedChannels.join(' and ')}** communication channel${selectedChannels.length > 1 ? 's' : ''}.
+This is a **${campaignType.toLowerCase()}** campaign using **${selectedDataSources.length > 0 ? selectedDataSources.join(' + ') : 'selected'}** data source${selectedDataSources.length > 1 ? 's' : ''} with **${selectedChannels.length > 0 ? selectedChannels.join(' + ') : 'selected'}** communication channel${selectedChannels.length > 1 ? 's' : ''}.
 
 🎯 **Campaign Details**  
 • Campaign ID: ${payload.campaignId}  
 • Campaign Name: ${payload.campaignName}
 
 👥 **Audience Strategy**  
-Audience targeting leverages **${payload.dataSources.join(', ')}** to reach ${audienceDescription.toLowerCase()}.
+Audience targeting leverages **${payload.dataSources.length > 0 ? payload.dataSources.join(', ') : 'selected data sources'}** to reach ${audienceDescription.toLowerCase()}.
 
 🚀 **Execution Approach**  
-The execution strategy centers on **${payload.workflow[0]?.channel || 'Email'}**, ${channelRationale.toLowerCase()}.
+The execution strategy centers on **${payload.workflow[0]?.channel || 'selected channel'}**, ${channelRationale.toLowerCase()}.
 
 ⏰ **Timing & Scheduling**  
 Timing is set for **${payload.workflow[0]?.schedule?.datetime ? new Date(payload.workflow[0]?.schedule.datetime).toLocaleString() : 'immediate execution'}**, ${timingRationale.toLowerCase()}.
@@ -279,8 +301,7 @@ Success will be measured against **conversion targets of ${payload.successCriter
 Compliance measures include a maximum of **${payload.limits?.maxMessagesPerUser || 3} messages per user** to maintain deliverability standards.
 
 💡 **Strategic Recommendations**  
-${recommendations.split('. ').map((rec, index) => `${index + 1}. ${rec.trim()}`).filter(rec => rec.length > 3).join('\n')}  
-${recommendations.includes('Monitor') ? '' : '\n4. Monitor engagement rates closely and adjust targeting parameters as needed for optimal campaign performance.'}`;
+${recommendations.map((rec, index) => `${index + 1}. ${rec}`).join('\n')}`;
 
   return explanation;
 }
