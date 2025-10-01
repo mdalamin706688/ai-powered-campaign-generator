@@ -250,41 +250,26 @@ function generatePayloadExplanation(payload: CampaignPayload, prompt: string, se
     recommendations = 'Time sensitivity is critical - monitor inventory levels and adjust messaging as the season progresses.';
   }
 
-  const explanation = `Campaign Strategy Overview
+  const explanation = `You requested: "${prompt}"
 
-You requested: "${prompt}"
+This is a ${campaignType.toLowerCase()} campaign using ${selectedDataSources.join(' and ')} data source${selectedDataSources.length > 1 ? 's' : ''} with ${selectedChannels.join(' and ')} communication channel${selectedChannels.length > 1 ? 's' : ''}.
 
-Campaign Type: ${campaignType}
-Selected configuration: ${selectedDataSources.join(' + ')} data source${selectedDataSources.length > 1 ? 's' : ''} with ${selectedChannels.join(' + ')} channel${selectedChannels.length > 1 ? 's' : ''}
+Campaign ID: ${payload.campaignId}
+Campaign Name: ${payload.campaignName}
 
-CAMPAIGN STRUCTURE
-ID: ${payload.campaignId}
-Name: ${payload.campaignName}
+Audience targeting leverages ${payload.dataSources.join(', ')} to reach ${audienceDescription.toLowerCase()}.
 
-AUDIENCE TARGETING
-Data Source: ${payload.dataSources.join(', ')}
-${audienceDescription}.
+The execution strategy centers on ${payload.workflow[0]?.channel || 'Email'}, ${channelRationale.toLowerCase()}.
 
-EXECUTION PLAN
-Primary Channel: ${payload.workflow[0]?.channel || 'Email'}
-${channelRationale}.
+Timing is set for ${payload.workflow[0]?.schedule?.datetime ? new Date(payload.workflow[0]?.schedule.datetime).toLocaleString() : 'immediate execution'}, ${timingRationale.toLowerCase()}.
 
-Timing: ${payload.workflow[0]?.schedule?.datetime ? new Date(payload.workflow[0]?.schedule.datetime).toLocaleString() : 'Immediate'}
-${timingRationale}.
+${payload.workflow[0]?.offer ? `An offer code ${payload.workflow[0].offer} has been incorporated to drive engagement.` : 'No specific offer has been configured for this campaign.'}
 
-Offer: ${payload.workflow[0]?.offer || 'None specified'}
+Success will be measured against conversion targets of ${payload.successCriteria?.conversionRateTarget || '5%'} and click rate targets of ${payload.successCriteria?.clickRateTarget || '10%'}. Comprehensive tracking includes open rates, click rates, and conversions.
 
-PERFORMANCE METRICS
-Conversion Target: ${payload.successCriteria?.conversionRateTarget || '5%'}
-Click Target: ${payload.successCriteria?.clickRateTarget || '10%'}
-Tracking: Open rates, click rates, and conversions enabled for comprehensive analysis.
+Compliance measures include a maximum of ${payload.limits?.maxMessagesPerUser || 3} messages per user to maintain deliverability standards.
 
-COMPLIANCE & LIMITS
-Message Limit: ${payload.limits?.maxMessagesPerUser || 3} per user
-Designed to maintain deliverability and respect user preferences.
-
-RECOMMENDATIONS
-${recommendations} Monitor engagement rates closely and adjust targeting as needed for optimal results.`;
+${recommendations} Monitor engagement rates closely and adjust targeting parameters as needed for optimal campaign performance.`;
 
   return explanation;
 }
